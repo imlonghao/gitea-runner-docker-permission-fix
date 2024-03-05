@@ -10,5 +10,5 @@ jobs:
     steps:
     - uses: https://github.com/imlonghao/gitea-runner-docker-permission-fix@main
     - run: |
-        docker ps
+      docker ps
 ```
