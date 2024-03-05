@@ -1,0 +1,18 @@
+name: "gitea-runner-docker-permission-fix"
+author: "imlonghao <me@imlonghao.com>"
+runs:
+  using: "composite"
+  steps:
+    - name: Fixing Permission
+      shell: bash
+      run: |
+        set -x
+        docker_group=$(stat -c '%G' /var/run/docker.sock)
+        if [[ $docker_group == "UNKNOWN" ]]; then
+          docker_gid=$(stat -c '%g' /var/run/docker.sock)
+          docker_group="docker$docker_gid"
+          sudo addgroup --gid $docker_gid $docker_group
+        fi
+        if ! id -nG $(whoami) | grep -qw "$docker_group"; then
+          sudo usermod -aG $docker_group $(whoami)
+        fi
